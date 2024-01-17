@@ -18,11 +18,11 @@ int p2c_pipe[2];
 pid_t test_pid;
 
 void signal_handler(int signum);
-int bytencat(char *input1, char* input2, int input1_size, int input1_len, int input2_len);
-int bytencpy(char *new, char *old, int size);
+int bytencat(unsigned char *input1, unsigned char *input2, int input1_size, int input1_len, int input2_len);
+int bytencpy(unsigned char *new, unsigned char *old, int size);
 int write_bytes(int fd, void *buf, size_t len);
-int check_error(char *input_buf, int input_buf_len, char *target, char *error_msg);
-int Reduced(char *input_buf, int input_buf_len, char *target, char *error_msg, char *output_file);
+int check_error(unsigned char *input_buf, int input_buf_len, char *target, char *error_msg);
+int Reduced(unsigned char *input_buf, int input_buf_len, char *target, char *error_msg, char *output_file);
 
 void signal_handler(int signum) {
   if (signum == SIGALRM) {
@@ -32,7 +32,7 @@ void signal_handler(int signum) {
   }
 }
 
-int bytencat(char *input1, char* input2, int input1_size, int input1_len, int input2_len){
+int bytencat(unsigned char *input1, unsigned char *input2, int input1_size, int input1_len, int input2_len){
   int i=0;
   if((input1_len + input2_len) > input1_size) return -1;
   for(i=0;i<input2_len;i++){
@@ -42,7 +42,7 @@ int bytencat(char *input1, char* input2, int input1_size, int input1_len, int in
 }
 
 //TODO: error check
-int bytencpy(char *new, char *old, int size){
+int bytencpy(unsigned char *new, unsigned char *old, int size){
   for(int i=0;i<size;i++){
     new[i] = old[i];
   }
@@ -63,7 +63,7 @@ int write_bytes(int fd, void *buf, size_t len){
   return 0 ;
 }
 
-int check_error(char *input_buf, int input_buf_len, char *target, char *error_msg){
+int check_error(unsigned char *input_buf, int input_buf_len, char *target, char *error_msg){
   debug(printf("error msg: %s\n",error_msg);)
 
   //make pipe
@@ -123,7 +123,7 @@ int check_error(char *input_buf, int input_buf_len, char *target, char *error_ms
   }
 }
 
-int Reduced(char *input_buf, int input_buf_len, char *target, char *error_msg, char *output_file){
+int Reduced(unsigned char *input_buf, int input_buf_len, char *target, char *error_msg, char *output_file){
   int s = input_buf_len - 1;
   while(s > 0){
     printf("%d\n",s);
@@ -131,10 +131,10 @@ int Reduced(char *input_buf, int input_buf_len, char *target, char *error_msg, c
     for(int i=0;i<(input_buf_len - s + 1);i++){
       int head_size = i;
       int tail_size = input_buf_len-head_size-s;
-      char *o = (char *)malloc(head_size + tail_size+1);
+      unsigned char *o = (unsigned char *)malloc(head_size + tail_size+1);
       int o_len = 0;
       if(head_size > 0){
-        char *head = (char *)malloc(head_size+1);
+        unsigned char *head = (unsigned char *)malloc(head_size+1);
         if(bytencpy(head,input_buf,head_size)){
           perror("error bytencpy\n");
           return 1;
@@ -149,7 +149,7 @@ int Reduced(char *input_buf, int input_buf_len, char *target, char *error_msg, c
         free(head);
       }
       if(tail_size > 0){
-        char *tail = (char *)malloc(tail_size+1);
+        unsigned char *tail = (unsigned char *)malloc(tail_size+1);
         if(bytencpy(tail,&input_buf[i+s],tail_size)){
           perror("error bytencpy\n");
           return 1;
@@ -173,7 +173,7 @@ int Reduced(char *input_buf, int input_buf_len, char *target, char *error_msg, c
     }
     //check mid
     for(int i=0;i<(input_buf_len - s + 1);i++){
-      char *mid = (char *)malloc(s+1);
+      unsigned char *mid = (unsigned char *)malloc(s+1);
       int mid_len = s;
       if(bytencpy(mid,&input_buf[i],mid_len)){
         perror("error bytencpy\n");
@@ -201,11 +201,11 @@ int main(int argc, char *argv[]){
   char *input_file = NULL;
   char *error_msg = NULL;
   char *reduced = NULL;
-  char *input_buf;
+  unsigned char *input_buf;
   struct stat file_info;
   int read_len = 0;
   int input_buf_len = 0;
-	char buf[32];
+	unsigned char buf[32];
 
   //option parsing
   if (argc < 8) {
@@ -242,8 +242,8 @@ int main(int argc, char *argv[]){
   debug(printf("file size: %lld bytes\n", file_size);)
 
   //read a input file and put it into input buffer
-  input_buf = (char*)malloc(sizeof(char) * file_size);
-  while (((read_len = fread(&buf,sizeof(char),sizeof(buf),fp)) > 0)){
+  input_buf = (unsigned char *)malloc(sizeof(unsigned char) * file_size);
+  while (((read_len = fread(&buf,sizeof(unsigned char),sizeof(buf),fp)) > 0)){
     if((input_buf_len = bytencat(input_buf,buf,file_size,input_buf_len,read_len)) == -1){
       perror("bytencat error\n");
       exit(EXIT_FAILURE);

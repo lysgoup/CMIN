@@ -4,23 +4,17 @@ cmin: cmin.c
 debug: cmin.c
 	gcc -o cmin cmin.c -DDEBUG
 
-exec2: exec2.c
-	gcc -o exec2 exec2.c
-
-exec3: exec3.c
-	gcc -o exec3 exec3.c
-
-hello:
-	./cmin -i ./hello.txt -m "AddressSanitizer: heap-buffer-overflow" -o reduced ./OperatingSystem/jsmn/jsondump
+unsigned: test_cmin.c
+	gcc -o test_cmin test_cmin.c
 
 jsmn:
-	./cmin -i ./OperatingSystem/jsmn/testcases/crash.json -m "AddressSanitizer: heap-buffer-overflow" -o reduced ./OperatingSystem/jsmn/jsondump
+	./test_cmin -i ./OperatingSystem/jsmn/testcases/crash.json -m "AddressSanitizer: heap-buffer-overflow" -o reduced ./OperatingSystem/jsmn/jsondump
 
 libxml2:
-	./cmin -i ./OperatingSystem/libxml2/testcases/crash.xml -m "SEGV on unknown address" -o reduced "./OperatingSystem/libxml2/xmllint --recover --postvalid -"
+	./test_cmin -i ./OperatingSystem/libxml2/testcases/crash.xml -m "SEGV on unknown address" -o reduced "./OperatingSystem/libxml2/xmllint --recover --postvalid -"
 	
 balance:
-	./cmin -i ./OperatingSystem/balance/testcases/fail -m msg -o reduced ./OperatingSystem/balance/balance
+	./test_cmin -i ./OperatingSystem/balance/testcases/fail -m msg -o reduced ./OperatingSystem/balance/balance
 
 libpng:
-	./cmin -i ./OperatingSystem/libpng/crash.png -m "MemorySanitizer: use-of-uninitialized-value" -o reduced ./OperatingSystem/libpng/libpng/test_pngfix
+	./test_cmin -i ./OperatingSystem/libpng/crash.png -m "MemorySanitizer: use-of-uninitialized-value" -o reduced ./OperatingSystem/libpng/libpng/test_pngfix
