@@ -8,9 +8,9 @@
 #include <fcntl.h>
 
 #ifdef DEBUG
-    #define debug(fn) fn
+  #define debug(fn) fn
 #else
-    #define debug(fn)
+  #define debug(fn)
 #endif
 
 int c2p_pipe[2];
