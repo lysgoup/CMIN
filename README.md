@@ -5,10 +5,24 @@ The Crashing Input Minimizer uses the Delta Debugging Algorithm to extract the p
 
 ## How to build?
 You can use Makefile to build the program.
-```c
+```bash
 make
 ```
 This command will make executable file named 'cmin'<br><br>
 If you want to see details of Delta Debugging, use ```make debug```.
 
 ## How to run?
+CMIN receives command-line arguments as following foramat.
+```bash
+./cmin -i [input_file] -m [target_error_msg] -o [output_file] [executable file]
+```
+- example
+```bash
+./cmin -i received -m "SEGV" -o reduced ./a.out
+```
+After cmin is run with these options, a file named reduced is created.
+This file is a minified version of the input file and raises the target error given by the -m option.<br>
+If you need options for the target program, you can enter them in the [executable_file] part after the executable name.
+
+## If something goes wrong
+## Requirements
